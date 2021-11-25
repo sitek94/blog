@@ -1,11 +1,23 @@
-import { Form, redirect, useActionData, useTransition } from 'remix';
-import { createPost } from '~/post';
-import type { ActionFunction } from 'remix';
+import {
+  ActionFunction,
+  Form,
+  redirect,
+  useActionData,
+  useLoaderData,
+  useTransition,
+} from 'remix';
 import invariant from 'tiny-invariant';
+import type { LoaderFunction } from 'remix';
+import { getPost } from '~/post';
+import type { Post } from '~/post';
+import { createPost } from '../../post';
+
+export let loader: LoaderFunction = async ({ params }) => {
+  invariant(params.slug, 'expected params.slug');
+  return getPost(params.slug);
+};
 
 export let action: ActionFunction = async ({ request }) => {
-  await new Promise(res => setTimeout(res, 2000));
-
   let formData = await request.formData();
   let title = formData.get('title');
   let markdown = formData.get('markdown');
@@ -20,12 +32,16 @@ export let action: ActionFunction = async ({ request }) => {
 
   invariant(typeof title === 'string');
   invariant(typeof markdown === 'string');
+
+  // When you edit a post, you either overwrite the old one, or create a new one
+  // if you change the title.
   await createPost({ title, markdown });
 
   return redirect('/admin');
 };
 
-export default function NewPost() {
+export default function AdminEditSlug() {
+  let post = useLoaderData<Post>();
   let errors = useActionData();
   let transition = useTransition();
 
@@ -34,17 +50,22 @@ export default function NewPost() {
       <p>
         <label>
           Post Title: {errors?.title && <em>Title is required</em>}{' '}
-          <input type="text" name="title" />
+          <input type="text" name="title" defaultValue={post.title} />
         </label>
       </p>
       <p>
         <label htmlFor="markdown">Markdown:</label>{' '}
         {errors?.markdown && <em>Markdown is required</em>}{' '}
-        <textarea id="markdown" name="markdown" rows={20} />
+        <textarea
+          id="markdown"
+          name="markdown"
+          rows={20}
+          defaultValue={post.markdown}
+        />
       </p>
       <p>
         <button type="submit">
-          {transition.submission ? 'Creating...' : 'Create Post'}
+          {transition.submission ? 'Saving...' : 'Save Post'}
         </button>
       </p>
     </Form>

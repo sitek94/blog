@@ -81,8 +81,8 @@ textarea {
   display: block;
   border: 1px solid var(--color-border);
   width: 100%;
+  max-height: 350px;
   font: inherit;
-  height: 150px;
   line-height: 1;
   padding-right: 0.5em;
   padding-left: 0.5em;

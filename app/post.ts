@@ -2,12 +2,11 @@ import path from 'path';
 import fs from 'fs/promises';
 import parseFrontMatter from 'front-matter';
 import invariant from 'tiny-invariant';
-import { marked } from 'marked';
 
 export type Post = {
   slug: string;
   title: string;
-  html: string;
+  markdown: string;
 };
 
 export type PostMarkdownAttributes = {
@@ -51,7 +50,7 @@ export async function getPost(slug: string): Promise<Post> {
     isValidPostAttributes(attributes),
     `Post ${filepath} is missing attributes`,
   );
-  return { slug, title: attributes.title, html: marked(body) };
+  return { slug, title: attributes.title, markdown: body };
 }
 
 type NewPost = {
