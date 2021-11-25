@@ -1,5 +1,8 @@
-# Welcome to Remix!
+# Remix Blog
 
+A simple blog built with Remix, by following [the official tutorial](https://remix.run/docs/en/v1/tutorials/blog).
+
+- [Ryan Florence's demo during Remix v1 release](https://youtu.be/wsJaUjd1rUo?t=316)
 - [Remix Docs](https://remix.run/docs)
 
 ## Development
